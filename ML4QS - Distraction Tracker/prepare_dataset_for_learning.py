@@ -119,9 +119,9 @@ class PrepareDatasetForLearning:
         else:
             # Check if the index is unique. If not, create a new index.
             if len(set(source_set.index) & set(addition.index)) > 0:
-                return source_set.append(addition).reset_index(drop=True)
+                return pd.concat([source_set, addition]).reset_index(drop=True)
             else:
-                return source_set.append(addition)
+                return pd.concat([source_set, addition])
 
     # If we have multiple datasets representing different users and want to perform classification,
     # we do the same as we have seen for the single dataset

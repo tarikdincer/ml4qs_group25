@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-file_path = "./data-3-prepped/merged_data.csv"
+file_path = "./data-4-prepped/merged_data.csv"
 
 data = pd.read_csv(file_path, index_col=0)
 
@@ -39,4 +39,4 @@ data[mouse_features] = data[mouse_features].fillna(0)
 for col in numeric_features:
     data = impute_interpolate(data, col)
 
-data.to_csv('./data-3-prepped/data_imputed.csv')
+data.to_csv('./data-4-prepped/data_imputed.csv')
