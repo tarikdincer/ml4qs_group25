@@ -1,17 +1,12 @@
 dlib==19.24.4
 numpy==1.26.4
 opencv-python==4.10.0.82
-pandas==2.2.2
-pynput @ file:///Users/runner/miniforge3/conda-bld/pynput_1717059464094/work
-pyobjc-core @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_342uq4g0a3/croot/pyobjc-core_1710189033492/work
-pyobjc-framework-ApplicationServices @ file:///Users/runner/miniforge3/conda-bld/pyobjc-framework-applicationservices_1704982088550/work
-pyobjc-framework-Cocoa==10.3
-pyobjc-framework-CoreText==10.3
-pyobjc-framework-Quartz==10.3
+pandas
+pynput 
 python-dateutil==2.9.0.post0
-python-xlib @ file:///home/conda/feedstock_root/build_artifacts/python-xlib_1672238408014/work
+python-xlib 
 pytz==2024.1
 setuptools==69.5.1
-six @ file:///tmp/build/80754af9/six_1644875935023/work
+six 
 tzdata==2024.1
 wheel==0.43.0
