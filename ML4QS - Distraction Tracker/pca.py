@@ -46,7 +46,7 @@ class ReduceDimensionality:
             self.var_ratios.append(np.sum(pca.explained_variance_ratio_))
         
         for index, ratio in enumerate(self.var_ratios):
-            if ratio >= 0.90:
+            if ratio >= 0.8:
                 self.optimal_num_components = index
                 break
 
@@ -54,19 +54,32 @@ class ReduceDimensionality:
         
 
     def create_graph(self):
-        num_features = len(self.scaled_numerical_data.columns)
-        plt.figure(figsize=(4,2),dpi=150)
+        num_features = range(1, len(self.scaled_numerical_data.columns) + 1)
+        plt.figure(figsize=(10, 6), dpi=150)  # Increase figure size
         plt.grid()
-        plt.plot(num_features, self.var_ratios,marker='o')
+        plt.plot(num_features, self.var_ratios, marker='o', markersize=5)  # Adjust marker size
         plt.xlabel('n_components')
         plt.ylabel('Explained variance ratio')
         plt.title('n_components vs. Explained Variance Ratio')
+        plt.show()
 
     
     def create_final_data(self):
         pca = PCA(n_components=self.optimal_num_components)
+
         self.pca_df = pca.fit_transform(self.scaled_numerical_data)
-        self.final_df = pd.concat([self.pca_df, self.categorical_data])
+        pca_columns = [f'PC{i+1}' for i in range(self.pca_df.shape[1])]
+        # print(self.pca_df)
+        # print(self.pca_df.shape)
+        # print(pca.get_feature_names_out)
+        # print(pca.get_feature_names_out)
+        # print(len(self.scaled_numerical_data))
+        self.pca_df = pd.DataFrame(self.pca_df, columns=pca_columns)
+        self.pca_df.reset_index(inplace=True, drop=True)
+        self.categorical_data.reset_index(inplace=True, drop=True)
+        print(self.pca_df)
+        print(self.categorical_data)
+        self.final_df = pd.concat([self.pca_df, self.categorical_data], axis=1)
 
         return self.final_df
         

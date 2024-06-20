@@ -25,7 +25,7 @@ numeric_features = ['Acceleration x (m/s^2)', 'Acceleration y (m/s^2)', 'Acceler
                     'Tilt left/right (deg)', 'Sound pressure level (dB)']
 eye_features = ['Left Pupil X', 'Left Pupil Y', 'Right Pupil X', 'Right Pupil Y',
                 'Blinking', 'Looking Center', 'Looking Left', 'Looking Right']
-mouse_features = ['Event', 'PositionX', 'PositionY']
+mouse_features = ['Mouse Scroll', 'Mouse Move', 'Mouse Click', 'Key Press', 'PositionX', 'PositionY']
 
 missing_values = data.isnull().sum()
 

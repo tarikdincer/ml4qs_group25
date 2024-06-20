@@ -13,17 +13,25 @@ cols_for_abstraction = ['Absolute acceleration (m/s^2)', 'Sound pressure level (
 
 df = numerical_abstraction.abstract_numerical(data_table=df, cols=cols_for_abstraction, window_size=5, aggregation_function_name='mean')
 df = numerical_abstraction.abstract_numerical(data_table=df, cols=cols_for_abstraction, window_size=60, aggregation_function_name='mean')
+df = numerical_abstraction.abstract_numerical(data_table=df, cols=cols_for_abstraction, window_size=5, aggregation_function_name='max')
+df = numerical_abstraction.abstract_numerical(data_table=df, cols=cols_for_abstraction, window_size=60, aggregation_function_name='max')
+df = numerical_abstraction.abstract_numerical(data_table=df, cols=cols_for_abstraction, window_size=5, aggregation_function_name='min')
+df = numerical_abstraction.abstract_numerical(data_table=df, cols=cols_for_abstraction, window_size=60, aggregation_function_name='min')
+df = numerical_abstraction.abstract_numerical(data_table=df, cols=cols_for_abstraction, window_size=5, aggregation_function_name='std')
+df = numerical_abstraction.abstract_numerical(data_table=df, cols=cols_for_abstraction, window_size=60, aggregation_function_name='std')
+df.fillna(-1, inplace=True)
 
+print(df)
 
-categorical_features = ['isDistracted', 'Blinking', 'Looking Center', 'Looking Left', 'Looking Right', 'Event']
-numerical_features = [feature for feature in df.columns if feature not in categorical_features]
-print(numerical_features)
-pca = ReduceDimensionality(df, numerical_features)
-pca.seperate_numerical()
-pca.standardize_data()
-pca.find_optimal_num_compontents()
-pca.create_graph()
-df = pca.create_final_data()
+# categorical_features = ['isDistracted', 'Blinking', 'Looking Center', 'Looking Left', 'Looking Right', 'Event']
+# numerical_features = [feature for feature in df.columns if feature not in categorical_features]
+# print(len(numerical_features))
+# pca = ReduceDimensionality(df, numerical_features)
+# pca.seperate_numerical()
+# pca.standardize_data()
+# pca.find_optimal_num_compontents()
+# pca.create_graph()
+# df = pca.create_final_data()
 
 print(df)
 

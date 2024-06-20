@@ -1,6 +1,7 @@
 import pandas as pd
 from datetime import datetime
 import os
+import math
 
 base_dir = "./data-4/"
 output_dir = "./data-4-prepped/"
@@ -178,13 +179,24 @@ def resample_mouse_key(input_file, output_file):
 
     data['Elapsed Time (s)'] = (data['Time (s)'] - data['Time (s)'].min()).dt.total_seconds()
 
-    data['Elapsed Time (s)'] = data['Elapsed Time (s)'].round(0)
+    data['Elapsed Time (s)'] = data['Elapsed Time (s)'].apply(lambda x: math.floor(x))
+    
+    d = pd.get_dummies(data['Event'])
+    data = pd.concat([data, d], axis=1)
+    print(data)
+    data.rename(columns=lambda x: x.strip(), inplace=True)
 
     grouped_data = data.groupby('Elapsed Time (s)').agg({
-        'Event': 'count',
+        'Mouse Move': 'sum',
+        'Key Press': 'sum',
+        'Mouse Scroll': 'sum',
+        'Mouse Click': 'sum',
         'PositionX': 'mean',
         'PositionY': 'mean'
     }).reset_index()
+
+    print(grouped_data)
+
 
     grouped_data.rename(columns={'Elapsed Time (s)': 'Time (s)'}, inplace=True)
     grouped_data.to_csv(output_file, index=False)
@@ -197,17 +209,17 @@ def resample_gaze_tracking(input_file, output_file):
 
     data['Elapsed Time (s)'] = (data['Time (s)'] - data['Time (s)'].min()).dt.total_seconds()
 
-    data['Elapsed Time (s)'] = data['Elapsed Time (s)'].round(0)
+    data['Elapsed Time (s)'] = data['Elapsed Time (s)'].apply(lambda x: math.floor(x))
 
     grouped_data = data.groupby('Elapsed Time (s)').agg({
         "Left Pupil X": 'mean',
         "Left Pupil Y": 'mean',
         "Right Pupil X": 'mean',
         "Right Pupil Y": 'mean',
-        "Blinking": 'count',
-        "Looking Center": 'count',
-        "Looking Left": 'count',
-        "Looking Right": 'count'
+        "Blinking": 'sum',
+        "Looking Center": 'sum',
+        "Looking Left": 'sum',
+        "Looking Right": 'sum'
     }).reset_index()
 
     grouped_data.rename(columns={'Elapsed Time (s)': 'Time (s)'}, inplace=True)

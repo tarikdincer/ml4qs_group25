@@ -5,6 +5,7 @@ from prepare_dataset_for_learning import PrepareDatasetForLearning
 from feature_selection import FeatureSelectionClassification
 from learning_algorithms import ClassificationAlgorithms
 from evaluation import ClassificationEvaluation
+from pca import ReduceDimensionality
 
 prep_dataset = PrepareDatasetForLearning()
 feature_selection = FeatureSelectionClassification()
@@ -22,13 +23,31 @@ for fpath in file_paths:
 
 # Prepare datasets
 train_X, test_X, train_Y, test_Y = prep_dataset.split_multiple_datasets_classification(dfs, ['isDistracted'], matching='', training_frac=0.8, filter=False, temporal=True, random_state=42)
+
+combined_X = pd.concat([train_X, test_X])
+combined_Y = pd.concat([train_Y, test_Y])
+
+categorical_features = ['isDistracted', 'Blinking', 'Looking Center', 'Looking Left', 'Looking Right', 'Mouse Click', 'Mouse Scroll', 'Mouse Move', 'Key Press']
+numerical_features = [feature for feature in combined_X.columns if feature not in categorical_features]
+print(len(numerical_features))
+print(combined_X)
+pca = ReduceDimensionality(combined_X, numerical_features)
+pca.seperate_numerical()
+pca.standardize_data()
+pca.find_optimal_num_compontents()
+pca.create_graph()
+combined_X_pca = pca.create_final_data()
+print(combined_X_pca)
+
 print(f'Training set size: {train_X.shape[0]}')
 print(f'Test set size: {test_X.shape[0]}')
+train_X_pca = combined_X_pca.iloc[:train_X.shape[0], :]
+test_X_pca = combined_X_pca.iloc[train_X.shape[0]:, :]
 
 # Feature selection
-selected_features, ordered_features, ordered_scores = feature_selection.forward_selection(20, X_train=train_X, X_test=test_X, y_train=train_Y, y_test=test_Y, gridsearch=True)
-train_X = train_X[selected_features]
-test_X = test_X[selected_features]
+# selected_features, ordered_features, ordered_scores = feature_selection.forward_selection(20, X_train=train_X, X_test=test_X, y_train=train_Y, y_test=test_Y, gridsearch=True)
+# train_X = train_X[selected_features]
+# test_X = test_X[selected_features]
 
 def plot_confusion_matrix_and_metrics(model_name, conf_matrix):
     accuracy = accuracy_score(test_Y, pred_test_y)
@@ -46,16 +65,16 @@ def plot_confusion_matrix_and_metrics(model_name, conf_matrix):
     print("")
 
 # Decision Tree
-pred_training_y, pred_test_y, frame_prob_training_y, frame_prob_test_y = classification_algorithms.decision_tree(train_X, train_Y, test_X)
+pred_training_y, pred_test_y, frame_prob_training_y, frame_prob_test_y = classification_algorithms.decision_tree(train_X_pca, train_Y, test_X_pca)
 conf_matrix_dt = evaluation.confusion_matrix(test_Y, pred_test_y, labels=[1, 0])
 plot_confusion_matrix_and_metrics("Decision Tree", conf_matrix_dt)
 
 # Random Forest
-pred_training_y, pred_test_y, frame_prob_training_y, frame_prob_test_y = classification_algorithms.random_forest(train_X, train_Y, test_X)
+pred_training_y, pred_test_y, frame_prob_training_y, frame_prob_test_y = classification_algorithms.random_forest(train_X_pca, train_Y, test_X_pca)
 conf_matrix_rf = evaluation.confusion_matrix(test_Y, pred_test_y, labels=[1, 0])
 plot_confusion_matrix_and_metrics("Random Forest", conf_matrix_rf)
 
 # SVM Evaluation
-pred_training_y, pred_test_y, frame_prob_training_y, frame_prob_test_y = classification_algorithms.support_vector_machine_with_kernel(train_X, train_Y, test_X)
+pred_training_y, pred_test_y, frame_prob_training_y, frame_prob_test_y = classification_algorithms.support_vector_machine_with_kernel(train_X_pca, train_Y, test_X_pca)
 conf_matrix_svm = evaluation.confusion_matrix(test_Y, pred_test_y, labels=[1, 0])
 plot_confusion_matrix_and_metrics("SVM Evaluation", conf_matrix_svm)
